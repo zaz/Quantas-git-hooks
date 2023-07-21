@@ -1,0 +1,44 @@
+#!/bin/sh -e
+
+# post-receive hook receives its arguments on stdin
+# in case multiple branches are pushed at once, we use a while loop
+while read oldrev newrev refname
+do
+    branch=$(git rev-parse --symbolic --abbrev-ref "${refname}")
+    if [ "${branch}" = "run" ]; then
+	cd ..
+	unset GIT_DIR
+
+        git checkout run
+
+        # Enter detached-HEAD mode.
+        # Commits made are not added to any particular branch.
+        git checkout HEAD
+
+	# In the event of error, we must checkout dummy so users can push to the run
+	# branch (pushing is not allowed if the branch is checked out).
+	make run || git checkout -B dummy
+
+        git add --all
+        git commit --message 'results from `make run`' \
+		   --author 'Quantas results bot <jbrow221~quantas-bot@kent.edu>'
+
+        # Add a reference so we can find the results commit using the hash of
+        # the commit containing the code used to generate the results.
+        git update-ref "refs/results/$(git rev-parse HEAD~)" HEAD
+
+	# Also tag the latest results "results"
+	git tag --delete results
+	git tag results HEAD
+
+        # Now, if we have some code in commit deadbeef..., its results can be
+        # found in refs/results/deadbeef...  This ref will be transferred to
+        # the user next time they run `git fetch` or `git pull`.
+
+        # Finally, un-checkout run. Having it checked out will interfere with
+	# users pushing code to it.
+	git checkout -B dummy
+
+	cd -
+    fi
+done
