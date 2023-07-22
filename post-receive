@@ -32,14 +32,6 @@ do
         # the commit containing the code used to generate the results.
         git update-ref "refs/results/$(git rev-parse HEAD~)" HEAD
 
-	# Also tag the latest results "results"
-	git tag --delete results
-	git tag results HEAD
-
-        # Now, if we have some code in commit deadbeef..., its results can be
-        # found in refs/results/deadbeef...  This ref will be transferred to
-        # the user next time they run `git fetch` or `git pull`.
-
 	cd -
     fi
 done

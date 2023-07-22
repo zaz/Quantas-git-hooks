@@ -14,5 +14,4 @@ be run. It is placed in `.git/hooks/post-receive`. It must be executable
 (use `chmod +x`).
 
 `post-receive` will run `make run` on any code pushed on the `run` branch, and
-commit the results and tag them with `results`. This commit is not added to the
-`run` branch, but can be fetched with `git fetch --tags`.
+commit the results. This commit is not added to the `run` branch.
