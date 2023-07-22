@@ -13,15 +13,16 @@ do
 	cd ..
 	unset GIT_DIR
 
+	# In the event of error, we must checkout dummy so users can push to the
+	# run branch (pushing is not allowed if the branch is checked out).
+	trap "git checkout -B dummy" 0
         git checkout run
 
         # Enter detached-HEAD mode.
         # Commits made are not added to any particular branch.
         git checkout HEAD
 
-	# In the event of error, we must checkout dummy so users can push to the run
-	# branch (pushing is not allowed if the branch is checked out).
-	make run || git checkout -B dummy
+	make run
 
         git add --all
         git commit --message 'results from `make run`' \
@@ -38,10 +39,6 @@ do
         # Now, if we have some code in commit deadbeef..., its results can be
         # found in refs/results/deadbeef...  This ref will be transferred to
         # the user next time they run `git fetch` or `git pull`.
-
-        # Finally, un-checkout run. Having it checked out will interfere with
-	# users pushing code to it.
-	git checkout -B dummy
 
 	cd -
     fi
