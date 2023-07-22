@@ -1,5 +1,9 @@
 #!/bin/sh -e
 
+# include environment variables specified in this server's .git/env, e.g.:
+# export GXX="g++-9"
+. ./env
+
 # post-receive hook receives its arguments on stdin
 # in case multiple branches are pushed at once, we use a while loop
 while read oldrev newrev refname
