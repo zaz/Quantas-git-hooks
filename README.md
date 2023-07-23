@@ -13,7 +13,13 @@ commit that was used to generate the results.
 
 ### Fetching results
 
-You can fetch results with
+You can fetch all results with:
+
+``` sh
+git fetch <remote> refs/results/*:refs/results/*
+```
+
+Or to fetch only the result of `deadbeef...`:
 
 ``` sh
 git fetch <remote> refs/results/deadbeef...:refs/results/deadbeef...
@@ -23,10 +29,4 @@ E.g. to fetch the result for HEAD, use:
 
 ``` sh
 git fetch <remote> refs/results/$(git rev-parse @):refs/results/$(git rev-parse @)
-```
-
-Or fetch all results with:
-
-``` sh
-git fetch <remote> refs/results/*:refs/results/*
 ```
